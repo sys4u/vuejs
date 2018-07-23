@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Event Bus Sample</title>
+  </head>
+  <body>
+    <div id="app">
+      <child-component1></child-component1>
+      <child-component2></child-component2>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <script>
+
+      var eventBus = new Vue();
+      
+      Vue.component('child-component1', {
+        template: '<div>하위 컴포넌트1 영역입니다.<button v-on:click="showLog">show</button></div>',
+        methods: {
+          showLog: function() {
+            eventBus.$emit('triggerEventBus', 100);
+          }
+        }
+      });
+      
+      Vue.component('child-component2', {
+        template: '<div>하위 컴포넌트2 영역입니다. 전달받은 값 : {{ number }}</div>',
+        created: function() {
+          var self = this;
+          eventBus.$on('triggerEventBus', function(value){//self 쓴 이유, 안쓰는 예제 작성
+            self.number += value;
+          });
+        },
+        data: function() {
+          return {
+            number : 0
+          }
+        }
+      });
+      
+      var app = new Vue({
+        el: '#app'
+      });
+    </script>
+  </body>
+</html>
